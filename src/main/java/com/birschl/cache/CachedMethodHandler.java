@@ -44,23 +44,14 @@ public class CachedMethodHandler implements MethodHandler {
 		String methodId = getUniqueMethodId(method);
 
 		CacheProvider cacheProvider;
-		if (cachedAnnotation.cacheScope() == CacheScope.OBJECT)
+		boolean isObjectScoped = cachedAnnotation.cacheScope() == CacheScope.OBJECT;
+		Map<String, CacheProvider> cacheProviders = isObjectScoped ? objectCacheProviders : classCacheProviders;
+
+		cacheProvider = cacheProviders.get(methodId);
+		if (cacheProvider == null)
 		{
-			cacheProvider = objectCacheProviders.get(methodId);
-			if (cacheProvider == null)
-			{
-				cacheProvider = cacheProviderType.newInstance();
-				objectCacheProviders.put(methodId, cacheProvider);
-			}
-		}
-		else
-		{
-			cacheProvider = classCacheProviders.get(methodId);
-			if (cacheProvider == null)
-			{
-				cacheProvider = cacheProviderType.newInstance();
-				classCacheProviders.put(methodId, cacheProvider);
-			}
+			cacheProvider = cacheProviderType.newInstance();
+			cacheProviders.put(methodId, cacheProvider);
 		}
 
 		return cacheProvider;

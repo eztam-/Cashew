@@ -57,6 +57,16 @@ public class MCache {
 		}
 		throw new MCacheException("Object instantiation failed"); // This will never happen
 	}
+
+	public static <T> T newCachedInstance(Class<T> clazz, Class<?> constructorParamType,
+			Object contructorParam) throws MCacheException
+	{
+		Class<?>[] constructorTypes = { constructorParamType };
+		Object[] constructorArgs = { contructorParam };
+		return newCachedInstance(clazz, constructorTypes, constructorArgs);
+		
+	}
+
 	//
 	// public static void attachToCache(Object o) {
 	//

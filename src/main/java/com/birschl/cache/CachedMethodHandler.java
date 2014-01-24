@@ -1,6 +1,6 @@
 package com.birschl.cache;
 
-import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,29 +8,22 @@ import java.util.Map;
 import javassist.util.proxy.MethodHandler;
 
 import com.birschl.cache.annotation.Cached;
+import com.birschl.cache.annotation.Cached.CacheScope;
 import com.birschl.cache.providers.CacheProvider;
 
 public class CachedMethodHandler implements MethodHandler {
 
-	private Map<String, CacheProvider> cacheProviders = new HashMap<String, CacheProvider>();
+	private Map<String, CacheProvider> objectCacheProviders = new HashMap<String, CacheProvider>();
 
-	public Object invoke(Object self, Method m, Method proceed, Object[] args)
-			throws Throwable {
+	private static Map<String, CacheProvider> classCacheProviders = new HashMap<String, CacheProvider>();
 
-		Annotation annotation = m.getAnnotation(Cached.class);
-		if (annotation != null)
+	public Object invoke(Object self, Method m, Method proceed, Object[] args) throws IllegalArgumentException, IllegalAccessException,
+			InvocationTargetException, InstantiationException {
+
+		Cached cachedAnnotation = m.getAnnotation(Cached.class);
+		if (cachedAnnotation != null)
 		{
-			Cached cachedAnnotation = (Cached) annotation;
-			Class<? extends CacheProvider> cacheProviderType = cachedAnnotation
-					.cacheProvider();
-
-			String methodId = getUniqueMethodId(m);
-			CacheProvider cacheProvider = cacheProviders.get(methodId);
-			if (cacheProvider == null)
-			{
-				cacheProvider = cacheProviderType.newInstance();
-				cacheProviders.put(methodId, cacheProvider);
-			}
+			CacheProvider cacheProvider = getCacheProvider(cachedAnnotation, m);
 
 			if (cacheProvider.contains(args))
 			{
@@ -43,6 +36,34 @@ public class CachedMethodHandler implements MethodHandler {
 			}
 		}
 		return proceed.invoke(self, args); // execute the original method.
+	}
+
+	private CacheProvider getCacheProvider(Cached cachedAnnotation, Method method) throws InstantiationException, IllegalAccessException {
+
+		Class<? extends CacheProvider> cacheProviderType = cachedAnnotation.cacheProvider();
+		String methodId = getUniqueMethodId(method);
+
+		CacheProvider cacheProvider;
+		if (cachedAnnotation.cacheScope() == CacheScope.OBJECT)
+		{
+			cacheProvider = objectCacheProviders.get(methodId);
+			if (cacheProvider == null)
+			{
+				cacheProvider = cacheProviderType.newInstance();
+				objectCacheProviders.put(methodId, cacheProvider);
+			}
+		}
+		else
+		{
+			cacheProvider = classCacheProviders.get(methodId);
+			if (cacheProvider == null)
+			{
+				cacheProvider = cacheProviderType.newInstance();
+				classCacheProviders.put(methodId, cacheProvider);
+			}
+		}
+
+		return cacheProvider;
 	}
 
 	private String getUniqueMethodId(Method method) {

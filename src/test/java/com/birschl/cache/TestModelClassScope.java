@@ -4,16 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.birschl.cache.annotation.Cached;
-import com.birschl.cache.providers.HashMapCacheProvider;
+import com.birschl.cache.annotation.Cached.CacheScope;
 
-
-public class CacheTestClass {
-
+public class TestModelClassScope {
 	private Map<String, String> testData = new HashMap<String, String>();
 
-	public CacheTestClass() {}
+	public TestModelClassScope() {}
 
-	CacheTestClass(Map<String, String> testData) {
+	TestModelClassScope(Map<String, String> testData) {
 		this.testData = testData;
 	}
 
@@ -25,9 +23,8 @@ public class CacheTestClass {
 		this.testData = testData;
 	}
 
-	@Cached(cacheProvider = HashMapCacheProvider.class)
+	@Cached(cacheScope = CacheScope.CLASS)
 	String getValue(String key) {
 		return testData.get(key);
 	}
-
 }

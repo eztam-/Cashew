@@ -5,6 +5,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.birschl.cache.providers.CacheProvider;
+import com.birschl.cache.providers.HashMapCacheProvider;
 
 
 
@@ -12,6 +13,10 @@ import com.birschl.cache.providers.CacheProvider;
 @Target(ElementType.METHOD)
 
 public @interface Cached {
-	public Class<? extends CacheProvider> cacheProvider();
+	
+	public enum CacheScope {CLASS, OBJECT};
+	
+	public Class<? extends CacheProvider> cacheProvider() default HashMapCacheProvider.class;
 
+	public CacheScope cacheScope() default CacheScope.OBJECT;
 }

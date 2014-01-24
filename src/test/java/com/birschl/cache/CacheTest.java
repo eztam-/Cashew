@@ -20,15 +20,16 @@ public class CacheTest {
 	}
 
 	@Test
-	public void testCache() throws MCacheException {
-		CacheTestClass cachedObject = MCache.newCachedInstance(CacheTestClass.class);
+	public void testObjectScopeCache() throws MCacheException {
+		TestModelObjectScope cachedObject = MCache.newCachedInstance(TestModelObjectScope.class);
 
 		assertEquals(null, cachedObject.getValue("Key A"));
 		cachedObject.setTestData(testData);
-		assertEquals(null, cachedObject.getValue("Key A"));
 		assertEquals("Value B", cachedObject.getValue("Key B"));
+		cachedObject.getDataMap().put("Key A", "Value A");
+		assertEquals(null, cachedObject.getValue("Key A"));
 
-		CacheTestClass cachedObject2 = MCache.newCachedInstance(CacheTestClass.class);
+		TestModelObjectScope cachedObject2 = MCache.newCachedInstance(TestModelObjectScope.class);
 		cachedObject2.setTestData(testData);
 
 		assertEquals("Value A", cachedObject2.getValue("Key A"));
@@ -40,6 +41,25 @@ public class CacheTest {
 		assertEquals("Value C", cachedObject2.getValue("Key C"));
 	}
 
+	@Test
+	public void testClassScopeCache() throws MCacheException {
+		TestModelClassScope cachedObject = MCache.newCachedInstance(TestModelClassScope.class);
+
+		assertEquals(null, cachedObject.getValue("Key A"));
+		cachedObject.setTestData(testData);
+		assertEquals(null, cachedObject.getValue("Key A"));
+		assertEquals("Value B", cachedObject.getValue("Key B"));
+		cachedObject.getDataMap().put("Key A", "Value A");
+		assertEquals(null, cachedObject.getValue("Key A"));
+
+		TestModelClassScope cachedObject2 = MCache.newCachedInstance(TestModelClassScope.class);
+
+		assertEquals(null, cachedObject2.getValue("Key A"));
+		assertEquals("Value B", cachedObject2.getValue("Key B"));
+		assertEquals(null, cachedObject2.getValue("Key C"));
+		cachedObject2.getDataMap().put("Key C", "Value C");
+		assertEquals(null, cachedObject2.getValue("Key C"));
+	}
 
 	@Test
 	public void testCacheInstantiation() throws MCacheException {
@@ -47,7 +67,7 @@ public class CacheTest {
 		Class<?>[] types = {Map.class};
 		Object[] params = { testData };
 
-		CacheTestClass cachedObject = MCache.newCachedInstance(CacheTestClass.class, types, params);
+		TestModelObjectScope cachedObject = MCache.newCachedInstance(TestModelObjectScope.class, types, params);
 
 		assertEquals("Value A", cachedObject.getValue("Key A"));
 		assertEquals("Value B", cachedObject.getValue("Key B"));

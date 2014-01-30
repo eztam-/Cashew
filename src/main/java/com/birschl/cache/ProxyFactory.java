@@ -3,15 +3,14 @@ package com.birschl.cache;
 import java.lang.reflect.Method;
 
 import javassist.util.proxy.MethodFilter;
-import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
 
-public class Cashew {
+public class ProxyFactory {
 	public static <T> T newCachedInstance(Class<T> clazz) throws CachewException
 	{
 		try
 		{
-			ProxyFactory factory = new ProxyFactory();
+			javassist.util.proxy.ProxyFactory factory = new javassist.util.proxy.ProxyFactory();
 			factory.setSuperclass(clazz);
 			factory.setFilter(new MethodFilter() {
 				public boolean isHandled(Method m) {
@@ -39,7 +38,7 @@ public class Cashew {
 	public static <T> T newCachedInstance(Class<T> clazz, Class<?>[] constructorTypes, Object[] constructorArgs) throws CachewException {
 		try
 		{
-			ProxyFactory factory = new ProxyFactory();
+			javassist.util.proxy.ProxyFactory factory = new javassist.util.proxy.ProxyFactory();
 			factory.setSuperclass(clazz);
 			factory.setFilter(new MethodFilter() {
 				public boolean isHandled(Method m) {

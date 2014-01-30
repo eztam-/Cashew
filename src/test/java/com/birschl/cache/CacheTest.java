@@ -21,7 +21,7 @@ public class CacheTest {
 
 	@Test
 	public void testObjectScopeCache() throws CachewException {
-		TestModelObjectScope cachedObject = Cashew.newCachedInstance(TestModelObjectScope.class);
+		TestModelObjectScope cachedObject = ProxyFactory.newCachedInstance(TestModelObjectScope.class);
 
 		assertEquals(null, cachedObject.getValue("Key A"));
 		cachedObject.setTestData(testData);
@@ -29,7 +29,7 @@ public class CacheTest {
 		cachedObject.getDataMap().put("Key A", "Value A");
 		assertEquals(null, cachedObject.getValue("Key A"));
 
-		TestModelObjectScope cachedObject2 = Cashew.newCachedInstance(TestModelObjectScope.class);
+		TestModelObjectScope cachedObject2 = ProxyFactory.newCachedInstance(TestModelObjectScope.class);
 		cachedObject2.setTestData(testData);
 
 		assertEquals("Value A", cachedObject2.getValue("Key A"));
@@ -43,7 +43,7 @@ public class CacheTest {
 
 	@Test
 	public void testClassScopeCache() throws CachewException {
-		TestModelClassScope cachedObject = Cashew.newCachedInstance(TestModelClassScope.class);
+		TestModelClassScope cachedObject = ProxyFactory.newCachedInstance(TestModelClassScope.class);
 
 		assertEquals(null, cachedObject.getValue("Key A"));
 		cachedObject.setTestData(testData);
@@ -52,7 +52,7 @@ public class CacheTest {
 		cachedObject.getDataMap().put("Key A", "Value A");
 		assertEquals(null, cachedObject.getValue("Key A"));
 
-		TestModelClassScope cachedObject2 = Cashew.newCachedInstance(TestModelClassScope.class);
+		TestModelClassScope cachedObject2 = ProxyFactory.newCachedInstance(TestModelClassScope.class);
 
 		assertEquals(null, cachedObject2.getValue("Key A"));
 		assertEquals("Value B", cachedObject2.getValue("Key B"));
@@ -67,7 +67,7 @@ public class CacheTest {
 		Class<?>[] types = { Map.class };
 		Object[] params = { testData };
 
-		TestModelObjectScope cachedObject = Cashew.newCachedInstance(TestModelObjectScope.class, types, params);
+		TestModelObjectScope cachedObject = ProxyFactory.newCachedInstance(TestModelObjectScope.class, types, params);
 
 		assertEquals("Value A", cachedObject.getValue("Key A"));
 		assertEquals("Value B", cachedObject.getValue("Key B"));
@@ -80,7 +80,7 @@ public class CacheTest {
 
 	@Test
 	public void testCacheExpiration() throws CachewException, InterruptedException {
-		TestModelClassScope cachedObject = Cashew.newCachedInstance(TestModelClassScope.class);
+		TestModelClassScope cachedObject = ProxyFactory.newCachedInstance(TestModelClassScope.class);
 
 		cachedObject.setTestData(testData);
 		assertEquals("Value A", cachedObject.getValueExpiration("Key A"));

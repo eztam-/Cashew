@@ -39,7 +39,6 @@ public class HashMapCacheProvider implements CacheProvider {
 	}
 
 	private void checkExpiration() {
-		System.out.println("checkExpiration" + expirationTimeS + " " + creationTimeMs);
 		if (expirationTimeS == 0)
 			return;
 		else if (creationTimeMs == 0)

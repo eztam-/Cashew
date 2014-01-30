@@ -27,4 +27,9 @@ public class TestModelClassScope {
 	String getValue(String key) {
 		return testData.get(key);
 	}
+
+	@Cached(cacheScope = CacheScope.CLASS, expirationTime = 1)
+	String getValueExpiration(String key) {
+		return testData.get(key);
+	}
 }

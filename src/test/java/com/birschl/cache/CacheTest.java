@@ -63,8 +63,8 @@ public class CacheTest {
 
 	@Test
 	public void testCacheInstantiation() throws MCacheException {
-		
-		Class<?>[] types = {Map.class};
+
+		Class<?>[] types = { Map.class };
 		Object[] params = { testData };
 
 		TestModelObjectScope cachedObject = MCache.newCachedInstance(TestModelObjectScope.class, types, params);
@@ -78,4 +78,16 @@ public class CacheTest {
 		assertEquals("Value C", cachedObject.getValue("Key C"));
 	}
 
+	@Test
+	public void testCacheExpiration() throws MCacheException, InterruptedException {
+		TestModelClassScope cachedObject = MCache.newCachedInstance(TestModelClassScope.class);
+
+		cachedObject.setTestData(testData);
+		assertEquals("Value A", cachedObject.getValueExpiration("Key A"));
+		cachedObject.getDataMap().clear();
+		assertEquals("Value A", cachedObject.getValueExpiration("Key A"));
+		Thread.sleep(1100);
+		assertEquals(null, cachedObject.getValueExpiration("Key A"));
+
+	}
 }

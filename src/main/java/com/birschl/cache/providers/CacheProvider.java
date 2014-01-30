@@ -8,4 +8,5 @@ public interface CacheProvider {
 
 	boolean contains(Object[] args);
 	
+	void setExpirationTime(long expirationTime);
 }

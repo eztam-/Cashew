@@ -19,4 +19,6 @@ public @interface Cached {
 	public Class<? extends CacheProvider> cacheProvider() default HashMapCacheProvider.class;
 
 	public CacheScope cacheScope() default CacheScope.OBJECT;
+	
+	public long expirationTime() default 0;
 }

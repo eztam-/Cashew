@@ -51,6 +51,7 @@ public class CachedMethodHandler implements MethodHandler {
 		if (cacheProvider == null)
 		{
 			cacheProvider = cacheProviderType.newInstance();
+			cacheProvider.setExpirationTime(cachedAnnotation.expirationTime());
 			cacheProviders.put(methodId, cacheProvider);
 		}
 

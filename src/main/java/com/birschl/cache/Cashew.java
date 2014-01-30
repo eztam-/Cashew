@@ -6,8 +6,8 @@ import javassist.util.proxy.MethodFilter;
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
 
-public class MCache {
-	public static <T> T newCachedInstance(Class<T> clazz) throws MCacheException
+public class Cashew {
+	public static <T> T newCachedInstance(Class<T> clazz) throws CachewException
 	{
 		try
 		{
@@ -31,12 +31,12 @@ public class MCache {
 
 		} catch (Exception e)
 		{
-			throw new MCacheException(e);
+			throw new CachewException(e);
 		}
-		throw new MCacheException("Object instantiation failed"); // This will never happen
+		throw new CachewException("Object instantiation failed"); // This will never happen
 	}
 
-	public static <T> T newCachedInstance(Class<T> clazz, Class<?>[] constructorTypes, Object[] constructorArgs) throws MCacheException {
+	public static <T> T newCachedInstance(Class<T> clazz, Class<?>[] constructorTypes, Object[] constructorArgs) throws CachewException {
 		try
 		{
 			ProxyFactory factory = new ProxyFactory();
@@ -53,13 +53,13 @@ public class MCache {
 
 		} catch (Exception e)
 		{
-			throw new MCacheException(e);
+			throw new CachewException(e);
 		}
-		throw new MCacheException("Object instantiation failed"); // This will never happen
+		throw new CachewException("Object instantiation failed"); // This will never happen
 	}
 
 	public static <T> T newCachedInstance(Class<T> clazz, Class<?> constructorParamType,
-			Object contructorParam) throws MCacheException
+			Object contructorParam) throws CachewException
 	{
 		Class<?>[] constructorTypes = { constructorParamType };
 		Object[] constructorArgs = { contructorParam };

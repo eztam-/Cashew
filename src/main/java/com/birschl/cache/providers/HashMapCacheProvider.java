@@ -20,7 +20,11 @@ package com.birschl.cache.providers;
 import org.apache.commons.collections4.keyvalue.MultiKey;
 import org.apache.commons.collections4.map.MultiKeyMap;
 
-public class HashMapCacheProvider implements CacheProvider {
+public class HashMapCacheProvider extends CacheProvider {
+
+	public HashMapCacheProvider(String uniqueMethodId) {
+		super(uniqueMethodId);
+	}
 
 	private MultiKeyMap<Object, Object> cache = new MultiKeyMap<Object, Object>();
 
@@ -84,4 +88,6 @@ public class HashMapCacheProvider implements CacheProvider {
 			super(message);
 		}
 	}
+
+
 }

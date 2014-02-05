@@ -17,6 +17,7 @@
 
 package com.birschl.cache;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -35,7 +36,7 @@ public class CachedMethodHandler implements MethodHandler {
 	private static Map<String, CacheProvider> classCacheProviders = new HashMap<String, CacheProvider>();
 
 	public Object invoke(Object self, Method m, Method proceed, Object[] args) throws IllegalArgumentException, IllegalAccessException,
-			InvocationTargetException, InstantiationException {
+			InvocationTargetException, InstantiationException, SecurityException, NoSuchMethodException {
 
 		Cached cachedAnnotation = m.getAnnotation(Cached.class);
 		if (cachedAnnotation != null)
@@ -55,7 +56,8 @@ public class CachedMethodHandler implements MethodHandler {
 		return proceed.invoke(self, args); // execute the original method.
 	}
 
-	private CacheProvider getCacheProvider(Cached cachedAnnotation, Method method) throws InstantiationException, IllegalAccessException {
+	private CacheProvider getCacheProvider(Cached cachedAnnotation, Method method) throws InstantiationException, IllegalAccessException,
+			SecurityException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
 
 		Class<? extends CacheProvider> cacheProviderType = cachedAnnotation.cacheProvider();
 		String methodId = getUniqueMethodId(method);
@@ -67,7 +69,8 @@ public class CachedMethodHandler implements MethodHandler {
 		cacheProvider = cacheProviders.get(methodId);
 		if (cacheProvider == null)
 		{
-			cacheProvider = cacheProviderType.newInstance();
+			Constructor<? extends CacheProvider> constructor = cacheProviderType.getDeclaredConstructor(String.class);
+			cacheProvider = (CacheProvider) constructor.newInstance(methodId);
 			cacheProvider.setExpirationTime(cachedAnnotation.expirationTime());
 			cacheProviders.put(methodId, cacheProvider);
 		}

@@ -22,6 +22,7 @@ import java.util.Map;
 
 import com.birschl.cache.annotation.Cached;
 import com.birschl.cache.annotation.Cached.CacheScope;
+import com.birschl.cache.providers.PersistentCacheProvider;
 
 public class TestModelObjectScope {
 
@@ -43,6 +44,11 @@ public class TestModelObjectScope {
 
 	@Cached(cacheScope = CacheScope.OBJECT)
 	String getValue(String key) {
+		return testData.get(key);
+	}
+
+	@Cached(cacheProvider = PersistentCacheProvider.class, cacheScope = CacheScope.OBJECT)
+	String getValuePersistent(String key) {
 		return testData.get(key);
 	}
 

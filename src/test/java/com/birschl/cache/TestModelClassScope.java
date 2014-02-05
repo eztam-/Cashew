@@ -22,6 +22,7 @@ import java.util.Map;
 
 import com.birschl.cache.annotation.Cached;
 import com.birschl.cache.annotation.Cached.CacheScope;
+import com.birschl.cache.providers.PersistentCacheProvider;
 
 public class TestModelClassScope {
 	private Map<String, String> testData = new HashMap<String, String>();
@@ -49,4 +50,10 @@ public class TestModelClassScope {
 	String getValueExpiration(String key) {
 		return testData.get(key);
 	}
+
+	@Cached(cacheProvider = PersistentCacheProvider.class, cacheScope = CacheScope.CLASS)
+	String getValuePersistent(String key) {
+		return testData.get(key);
+	}
+
 }

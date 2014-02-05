@@ -17,13 +17,25 @@
 
 package com.birschl.cache.providers;
 
-public interface CacheProvider {
+public abstract class CacheProvider {
 
-	Object getCachedResult(Object[] keys);
+	private String uniqueMethodId;
 
-	void put(Object[] keys, Object value);
+	public CacheProvider(String uniqueMethodId) {
+		this.uniqueMethodId = uniqueMethodId;
+	}
 
-	boolean contains(Object[] args);
+	public abstract Object getCachedResult(Object[] keys);
+
+	public abstract void put(Object[] keys, Object value);
+
+	public abstract boolean contains(Object[] keys);
 	
-	void setExpirationTime(long expirationTime);
+	public abstract void setExpirationTime(long expirationTime);
+
+	public String getUniqueMethodId() {
+		return uniqueMethodId;
+	}
+
+
 }

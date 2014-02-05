@@ -65,15 +65,18 @@ public class CachedMethodHandler implements MethodHandler {
 		CacheProvider cacheProvider;
 		boolean isObjectScoped = cachedAnnotation.cacheScope() == CacheScope.OBJECT;
 		Map<String, CacheProvider> cacheProviders = isObjectScoped ? objectCacheProviders : classCacheProviders;
-
-		cacheProvider = cacheProviders.get(methodId);
-		if (cacheProvider == null)
+		synchronized (cacheProviders)
 		{
-			Constructor<? extends CacheProvider> constructor = cacheProviderType.getDeclaredConstructor(String.class);
-			cacheProvider = (CacheProvider) constructor.newInstance(methodId);
-			cacheProvider.setExpirationTime(cachedAnnotation.expirationTime());
-			cacheProviders.put(methodId, cacheProvider);
+			cacheProvider = cacheProviders.get(methodId);
+			if (cacheProvider == null)
+			{
+				Constructor<? extends CacheProvider> constructor = cacheProviderType.getDeclaredConstructor(String.class);
+				cacheProvider = (CacheProvider) constructor.newInstance(methodId);
+				cacheProvider.setExpirationTime(cachedAnnotation.expirationTime());
+				cacheProviders.put(methodId, cacheProvider);
+			}
 		}
+
 
 		return cacheProvider;
 	}
